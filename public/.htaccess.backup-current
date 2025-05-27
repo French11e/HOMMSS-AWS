@@ -29,6 +29,14 @@
         Require all denied
     </Files>
 
+    # Security: Prevent PHP execution in uploads
+    <FilesMatch "\.(php|php3|php4|php5|phtml)$">
+        <RequireAll>
+            Require all granted
+            Require not env REDIRECT_STATUS
+        </RequireAll>
+    </FilesMatch>
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -47,10 +55,16 @@
     RewriteCond %{QUERY_STRING} (\<|%3C).*iframe.*(\>|%3E) [NC]
     RewriteRule ^(.*)$ - [F,L]
 
-    # Security: Block only truly malicious user agents (allow Cloudflare, browsers, etc.)
-    RewriteCond %{HTTP_USER_AGENT} (nikto|sqlmap|nmap|masscan|zmap|dirbuster) [NC,OR]
-    RewriteCond %{HTTP_USER_AGENT} (%0A|%0D|%27|%3C|%3E|%00) [NC]
+    # Security: Block malicious user agents (but allow legitimate tools)
+    RewriteCond %{HTTP_USER_AGENT} (nikto|sqlmap|nmap|masscan|zmap) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (;|<|>|'|"|\)|\(|%0A|%0D|%22|%27|%28|%3C|%3E|%00).*(HTTrack|archiver|harvest|extract|grab|miner) [NC]
     RewriteRule ^(.*)$ - [F,L]
+
+    # Force HTTPS (if not behind Cloudflare proxy)
+    # RewriteCond %{HTTPS} off
+    # RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d

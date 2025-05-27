@@ -89,7 +89,17 @@
                             <div class="form-text mb-3">
                                 We’ll use this info to manage your account and provide a better experience.
                             </div>
-
+			
+			<!-- Turnstile CAPTCHA -->
+			@if(config('services.turnstile.site_key'))
+			<div class="mb-3 text-center">
+   			 <div class="cf-turnstile d-inline-block" data-sitekey="{{ config('services.turnstile.site_key') }}"></div>
+   				 @error('cf-turnstile-response')
+   			     <div class="text-danger small mt-1">{{ $message }}</div>
+   				 @enderror
+				</div>	
+				@endif
+			
                             <button type="submit" class="btn btn-primary w-100 rounded-3" id="register-button">
                                 Register
                             </button>
@@ -115,36 +125,61 @@
 </main>
 
 @section('scripts')
+<!-- Turnstile Script -->
+@if(config('services.turnstile.site_key'))
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
+
 <script>
     function checkPasswordMatch(confirmField) {
-        const password = document.getElementById("password");
-        const feedback = document.getElementById("password-match-feedback");
+        const password = document.getElementById('password').value;
+        const confirmPassword = confirmField.value;
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const matchIndicator = document.getElementById('password-match-indicator');
 
-        if (password && confirmField.value !== password.value) {
-            confirmField.setCustomValidity("Passwords don't match");
-            feedback.textContent = "Passwords do not match.";
-            feedback.classList.add("text-danger");
-            feedback.classList.remove("text-success");
+        if (password && confirmPassword) {
+            if (password === confirmPassword) {
+                confirmField.classList.remove('is-invalid');
+                confirmField.classList.add('is-valid');
+                if (matchIndicator) {
+                    matchIndicator.textContent = 'Passwords match!';
+                    matchIndicator.className = 'text-success small';
+                }
+                submitBtn.disabled = false;
+            } else {
+                confirmField.classList.remove('is-valid');
+                confirmField.classList.add('is-invalid');
+                if (matchIndicator) {
+                    matchIndicator.textContent = 'Passwords do not match';
+                    matchIndicator.className = 'text-danger small';
+                }
+                submitBtn.disabled = true;
+            }
         } else {
-            confirmField.setCustomValidity('');
-            feedback.textContent = "Passwords match.";
-            feedback.classList.remove("text-danger");
-            feedback.classList.add("text-success");
+            confirmField.classList.remove('is-valid', 'is-invalid');
+            if (matchIndicator) {
+                matchIndicator.textContent = '';
+            }
+            submitBtn.disabled = false;
         }
     }
 
-    function formatPhoneNumber(input) {
-        let numbers = input.value.replace(/\D/g, '');
-        if (numbers.length > 10 && !input.value.startsWith('+')) {
-            numbers = '+' + numbers;
-        }
-        input.value = numbers;
+    // Real-time validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordField = document.getElementById('password');
+        const confirmField = document.getElementById('password_confirmation');
 
-        const isValid = /^\+?\d{10,15}$/.test(input.value);
-        input.classList.toggle('is-valid', isValid);
-        input.classList.toggle('is-invalid', !isValid);
-    }
+        if (passwordField && confirmField) {
+            confirmField.addEventListener('input', function() {
+                checkPasswordMatch(this);
+            });
+
+            passwordField.addEventListener('input', function() {
+                if (confirmField.value) {
+                    checkPasswordMatch(confirmField);
+                }
+            });
+        }
+    });
 </script>
-@endsection
-
 @endsection

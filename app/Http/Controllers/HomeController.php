@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Rules\TurnstileRule;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
@@ -89,6 +90,7 @@ class HomeController extends Controller
             'subject' => 'required|string|in:' . implode(',', $subjectOptions),
             'message' => 'required|string|max:2000',
             'honeypot' => 'max:0', // Anti-spam honeypot field
+	    'cf-turnstile-response' => ['nullable', new TurnstileRule()],
         ], [
             'honeypot.max' => 'Invalid form submission',
             'subject.in' => 'Please select a valid subject from the dropdown.',

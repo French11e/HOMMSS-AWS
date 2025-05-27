@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\TurnstileRule;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -44,6 +45,7 @@ class RegisterController extends Controller
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.]).{12,}$/',
             ],
             'honeypot' => ['present', 'max:0'],
+		'cf-turnstile-response' => ['nullable', new TurnstileRule()],
             'timestamp' => [
                 'required',
                 function ($attribute, $value, $fail) {
