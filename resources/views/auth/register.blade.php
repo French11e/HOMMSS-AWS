@@ -50,16 +50,10 @@
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <div class="position-relative">
-                                    <input type="password" id="password"
-                                        class="form-control rounded-3 @error('password') is-invalid @enderror"
-                                        name="password" placeholder="Enter a strong password"
-                                        required autocomplete="new-password" style="padding-right: 45px;">
-                                    <button type="button" class="btn btn-link position-absolute" id="togglePassword"
-                                        style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                        <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
-                                    </button>
-                                </div>
+                                <input type="password" id="password"
+                                    class="form-control rounded-3 @error('password') is-invalid @enderror"
+                                    name="password" placeholder="Enter a strong password"
+                                    required autocomplete="new-password">
                                 <div class="form-text">
                                     Must be 12+ characters and include uppercase, lowercase, number, and special character.
                                 </div>
@@ -70,17 +64,11 @@
 
                             <div class="mb-3">
                                 <label for="password-confirm" class="form-label">Confirm Password</label>
-                                <div class="position-relative">
-                                    <input type="password" id="password_confirmation"
-                                        class="form-control rounded-3"
-                                        name="password_confirmation"
-                                        placeholder="Repeat your password"
-                                        required oninput="checkPasswordMatch(this)" style="padding-right: 45px;">
-                                    <button type="button" class="btn btn-link position-absolute" id="togglePasswordConfirm"
-                                        style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                        <i class="fa fa-eye" id="eyeIconConfirm" style="color: #6c757d;"></i>
-                                    </button>
-                                </div>
+                                <input type="password" id="password_confirmation"
+                                    class="form-control rounded-3"
+                                    name="password_confirmation"
+                                    placeholder="Repeat your password"
+                                    required oninput="checkPasswordMatch(this)">
                                 <div id="password-match-indicator" class="form-text"></div>
                             </div>
 
@@ -184,25 +172,7 @@ form .password .show-pass .hide {
             });
         }
 
-        // Toggle main password
-        const togglePassword = document.getElementById('togglePassword');
-        const eyeIcon = document.getElementById('eyeIcon');
-        togglePassword.addEventListener('click', () => {
-            const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-            eyeIcon.classList.toggle('fa-eye');
-            eyeIcon.classList.toggle('fa-eye-slash');
-        });
 
-        // Toggle confirm password
-        const togglePasswordConfirm = document.getElementById('togglePasswordConfirm');
-        const confirmEyeIcon = document.getElementById('eyeIconConfirm');
-        togglePasswordConfirm.addEventListener('click', () => {
-            const type = confirmField.type === 'password' ? 'text' : 'password';
-            confirmField.type = type;
-            confirmEyeIcon.classList.toggle('fa-eye');
-            confirmEyeIcon.classList.toggle('fa-eye-slash');
-        });
     });
 </script>
 @endsection
