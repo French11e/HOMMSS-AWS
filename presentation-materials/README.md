@@ -1,4 +1,4 @@
-# 🛡️ HOMMSS E-Commerce Platform
+# HOMMSS E-Commerce Platform
 ## Enterprise-Grade Secure E-Commerce Solution
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
@@ -10,12 +10,12 @@ A **production-ready e-commerce platform** built with Laravel, featuring **enter
 
 ---
 
-## 🎯 **PBL PRESENTATION SCRIPT**
+## PBL PRESENTATION SCRIPT
 
 ### **Opening Statement (2 minutes)**
 *"Today I'll demonstrate HOMMSS - not just an e-commerce platform, but a **secure, enterprise-grade solution** that implements **military-level security** and **professional data protection**. This isn't a typical student project - it's a **production-ready system** that could handle real business operations."*
 
-### **🔒 SECURITY SHOWCASE (5 minutes)**
+### **SECURITY SHOWCASE (5 minutes)**
 
 #### **1. Authentication Security Demo**
 ```bash

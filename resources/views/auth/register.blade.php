@@ -61,12 +61,19 @@
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password"
-                                    id="password"
-                                    class="form-control rounded-3 @error('password') is-invalid @enderror"
-                                    name="password"
-                                    placeholder="Enter a strong password"
-                                    required autocomplete="new-password">
+                                <div class="position-relative">
+                                    <input type="password"
+                                        id="password"
+                                        class="form-control rounded-3 @error('password') is-invalid @enderror"
+                                        name="password"
+                                        placeholder="Enter a strong password"
+                                        required autocomplete="new-password"
+                                        style="padding-right: 45px;">
+                                    <button type="button" class="btn btn-link position-absolute" id="togglePassword"
+                                        style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
+                                        <i class="fas fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
+                                    </button>
+                                </div>
                                 <div class="form-text">
                                     Must be 12+ characters and include uppercase, lowercase, number, and special character.
                                 </div>
@@ -78,18 +85,26 @@
 
                             <div class="mb-3">
                                 <label for="password-confirm" class="form-label">Confirm Password</label>
-                                <input type="password"
-                                    class="form-control rounded-3"
-                                    name="password_confirmation"
-                                    placeholder="Repeat your password"
-                                    required oninput="checkPasswordMatch(this)">
+                                <div class="position-relative">
+                                    <input type="password"
+                                        id="password_confirmation"
+                                        class="form-control rounded-3"
+                                        name="password_confirmation"
+                                        placeholder="Repeat your password"
+                                        required oninput="checkPasswordMatch(this)"
+                                        style="padding-right: 45px;">
+                                    <button type="button" class="btn btn-link position-absolute" id="togglePasswordConfirm"
+                                        style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
+                                        <i class="fas fa-eye" id="eyeIconConfirm" style="color: #6c757d;"></i>
+                                    </button>
+                                </div>
                                 <div id="password-match-feedback" class="form-text"></div>
                             </div>
 
                             <div class="form-text mb-3">
                                 We’ll use this info to manage your account and provide a better experience.
                             </div>
-			
+
 			<!-- Turnstile CAPTCHA -->
 			@if(config('services.turnstile.site_key'))
 			<div class="mb-3 text-center">
@@ -97,9 +112,9 @@
    				 @error('cf-turnstile-response')
    			     <div class="text-danger small mt-1">{{ $message }}</div>
    				 @enderror
-				</div>	
+				</div>
 				@endif
-			
+
                             <button type="submit" class="btn btn-primary w-100 rounded-3" id="register-button">
                                 Register
                             </button>
@@ -177,6 +192,46 @@
             passwordField.addEventListener('input', function() {
                 if (confirmField.value) {
                     checkPasswordMatch(confirmField);
+                }
+            });
+        }
+
+        // Password visibility toggle for main password
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (togglePassword && passwordInput && eyeIcon) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                if (type === 'password') {
+                    eyeIcon.classList.remove('fa-eye-slash');
+                    eyeIcon.classList.add('fa-eye');
+                } else {
+                    eyeIcon.classList.remove('fa-eye');
+                    eyeIcon.classList.add('fa-eye-slash');
+                }
+            });
+        }
+
+        // Password visibility toggle for confirm password
+        const togglePasswordConfirm = document.getElementById('togglePasswordConfirm');
+        const passwordConfirmInput = document.getElementById('password_confirmation');
+        const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+
+        if (togglePasswordConfirm && passwordConfirmInput && eyeIconConfirm) {
+            togglePasswordConfirm.addEventListener('click', function() {
+                const type = passwordConfirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordConfirmInput.setAttribute('type', type);
+
+                if (type === 'password') {
+                    eyeIconConfirm.classList.remove('fa-eye-slash');
+                    eyeIconConfirm.classList.add('fa-eye');
+                } else {
+                    eyeIconConfirm.classList.remove('fa-eye');
+                    eyeIconConfirm.classList.add('fa-eye-slash');
                 }
             });
         }

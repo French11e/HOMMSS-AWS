@@ -29,10 +29,14 @@
 
                         <div class="pb-3"></div>
 
-                        <div class="form-floating mb-3">
-                            <input id="password" type="password" class="form-control form-control_gray @error('password') is-invalid @enderror" name=" password" required=""
-                                autocomplete="current-password">
-                            <label for="customerPasswodInput">Password *</label>
+                        <div class="form-floating mb-3 position-relative">
+                            <input id="password" type="password" class="form-control form-control_gray @error('password') is-invalid @enderror" name="password" required=""
+                                autocomplete="current-password" style="padding-right: 45px;">
+                            <label for="password">Password *</label>
+                            <button type="button" class="btn btn-link position-absolute" id="togglePassword"
+                                style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
+                                <i class="fas fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
+                            </button>
                             @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -62,6 +66,30 @@
 
     </section>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    togglePassword.addEventListener('click', function() {
+        // Toggle the type attribute
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle the eye icon
+        if (type === 'password') {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    });
+});
+</script>
+
 <!-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
