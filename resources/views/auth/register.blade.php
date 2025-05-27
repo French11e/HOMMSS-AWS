@@ -127,6 +127,18 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 @endif
 
+{{-- Override conflicting CSS --}}
+<style>
+/* Override the main CSS that creates duplicate eye icons */
+form .password .show-pass {
+    display: none !important;
+}
+form .password .show-pass .view,
+form .password .show-pass .hide {
+    display: none !important;
+}
+</style>
+
 <script>
     function checkPasswordMatch(confirmField) {
         const password = document.getElementById('password').value;

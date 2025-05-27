@@ -82,6 +82,18 @@
     </section>
 </main>
 
+{{-- Override conflicting CSS --}}
+<style>
+/* Override the main CSS that creates duplicate eye icons */
+form .password .show-pass {
+    display: none !important;
+}
+form .password .show-pass .view,
+form .password .show-pass .hide {
+    display: none !important;
+}
+</style>
+
 {{-- Password Toggle Script --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
