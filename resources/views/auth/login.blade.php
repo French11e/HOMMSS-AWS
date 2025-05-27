@@ -35,8 +35,8 @@
                                     autocomplete="current-password" style="padding-right: 45px;">
                                 <label for="password">Password *</label>
                                 <button type="button" class="btn btn-link position-absolute" id="togglePassword"
-                                    style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                    <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
+                                    style="right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 5px; z-index: 10; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d; font-size: 16px;"></i>
                                 </button>
                             </div>
                             @error('password')
