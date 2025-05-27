@@ -14,40 +14,52 @@
         <div class="tab-content pt-2" id="login_register_tab_content">
             <div class="tab-pane fade show active" id="tab-item-login" role="tabpanel" aria-labelledby="login-tab">
                 <div class="login-form">
-                    <form method="POST" action="{{route('login')}}" name="login-form" class="needs-validation" novalidate="">
+                    <form method="POST" action="{{ route('login') }}" name="login-form" class="needs-validation" novalidate>
                         @csrf
+
+                        {{-- Email Field --}}
                         <div class="form-floating mb-3">
-                            <input class="form-control form-control_gray @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required="" autocomplete="email"
-                                autofocus="">
+                            <input type="email"
+                                class="form-control form-control_gray @error('email') is-invalid @enderror"
+                                id="email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
+                                placeholder="Email">
                             <label for="email">Email address *</label>
                             @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                             @enderror
                         </div>
 
+                        {{-- Spacer --}}
                         <div class="pb-3"></div>
 
-                        <div class="form-floating mb-3">
-                            <div class="position-relative">
-                                <input id="password" type="password" class="form-control form-control_gray @error('password') is-invalid @enderror" name="password" required=""
-                                    autocomplete="current-password" style="padding-right: 45px;">
-                                <label for="password">Password *</label>
-                                <button type="button" class="btn btn-link position-absolute" id="togglePassword"
-                                    style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                    <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
-                                </button>
-                            </div>
+                        {{-- Password Field --}}
+                        <div class="form-floating mb-3 position-relative">
+                            <input id="password" type="password"
+                                class="form-control form-control_gray @error('password') is-invalid @enderror"
+                                name="password" required autocomplete="current-password"
+                                placeholder="Password" style="padding-right: 45px;">
+                            <label for="password">Password *</label>
+
+                            {{-- Eye Icon --}}
+                            <button type="button" class="btn btn-link position-absolute"
+                                id="togglePassword"
+                                style="top: 50%; right: 10px; transform: translateY(-50%); z-index: 10; border: none; background: none;">
+                                <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
+                            </button>
+
                             @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                             @enderror
                         </div>
 
+                        {{-- Submit Button --}}
                         <button class="btn btn-primary w-100 text-uppercase" type="submit">Log In</button>
 
+                        {{-- Register / Forgot --}}
                         <div class="customer-option mt-4 text-center">
                             <span class="text-secondary">No account yet?</span>
                             <a href="{{ route('register') }}" class="text-decoration-none">Create Account</a>
@@ -59,39 +71,39 @@
                 </div>
             </div>
         </div>
+
+        {{-- Google Auth --}}
         <div class="mt-3">
-            <a href="{{route('google-auth')}}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+            <a href="{{ route('google-auth') }}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" style="width:20px; height:20px;">
                 <span>Continue with Google</span>
             </a>
         </div>
-
     </section>
 </main>
 
+{{-- Password Toggle Script --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Password visibility toggle
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     const eyeIcon = document.getElementById('eyeIcon');
 
-    if (togglePassword && passwordInput && eyeIcon) {
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
 
-            if (type === 'password') {
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
-            } else {
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
-            }
-        });
-    }
+        if (type === 'password') {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    });
 });
 </script>
+
 
 <!-- <div class="container">
     <div class="row justify-content-center">
