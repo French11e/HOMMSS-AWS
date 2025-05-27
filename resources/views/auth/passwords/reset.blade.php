@@ -34,7 +34,7 @@
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" style="padding-right: 45px;">
                                 <button type="button" class="btn btn-link position-absolute" id="togglePassword"
                                     style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                    <i class="fas fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
+                                    <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
                                 </button>
 
                                 @error('password')
@@ -52,7 +52,7 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" style="padding-right: 45px;">
                                 <button type="button" class="btn btn-link position-absolute" id="togglePasswordConfirm"
                                     style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                    <i class="fas fa-eye" id="eyeIconConfirm" style="color: #6c757d;"></i>
+                                    <i class="fa fa-eye" id="eyeIconConfirm" style="color: #6c757d;"></i>
                                 </button>
                             </div>
                         </div>

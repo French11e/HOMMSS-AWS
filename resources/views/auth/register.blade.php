@@ -71,7 +71,7 @@
                                         style="padding-right: 45px;">
                                     <button type="button" class="btn btn-link position-absolute" id="togglePassword"
                                         style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                        <i class="fas fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
+                                        <i class="fa fa-eye" id="eyeIcon" style="color: #6c757d;"></i>
                                     </button>
                                 </div>
                                 <div class="form-text">
@@ -95,7 +95,7 @@
                                         style="padding-right: 45px;">
                                     <button type="button" class="btn btn-link position-absolute" id="togglePasswordConfirm"
                                         style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; z-index: 10;">
-                                        <i class="fas fa-eye" id="eyeIconConfirm" style="color: #6c757d;"></i>
+                                        <i class="fa fa-eye" id="eyeIconConfirm" style="color: #6c757d;"></i>
                                     </button>
                                 </div>
                                 <div id="password-match-feedback" class="form-text"></div>
