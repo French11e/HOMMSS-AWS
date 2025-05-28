@@ -125,10 +125,24 @@ return [
              */
             'disks' => [
                 'local',
+                's3',
             ],
         ],
 
+        /*
+         * The password to be used for archive encryption.
+         * Set to `null` to disable encryption.
+         */
+        'password' => env('BACKUP_ARCHIVE_PASSWORD'),
 
+        /*
+         * The encryption algorithm to be used for archive encryption.
+         * You can set it to `null` or `false` to disable encryption.
+         *
+         * When set to 'default', we'll use ZipArchive::EM_AES_256 if it is
+         * available on your system.
+         */
+        'encryption' => env('BACKUP_ARCHIVE_PASSWORD') ? 'default' : null,
 
         /*
          * The directory where the temporary files will be stored.
@@ -204,7 +218,7 @@ return [
     'monitor_backups' => [
         [
             'name' => env('APP_NAME', 'laravel-backup'),
-            'disks' => ['local'],
+            'disks' => ['local', 's3'],
             'health_checks' => [
                 \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumAgeInDays::class => 1,
                 \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumStorageInMegabytes::class => 5000,
