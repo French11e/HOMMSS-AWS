@@ -138,9 +138,9 @@ return [
         /*
          * The encryption algorithm to use.
          * Use ZipArchive constants for encryption.
-         * Set to `null` to disable encryption.
+         * Set to empty string to disable encryption.
          */
-        'encryption' => null,
+        'encryption' => '',
 
 
 
