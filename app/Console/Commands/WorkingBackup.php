@@ -222,14 +222,20 @@ class WorkingBackup extends Command
     }
 
     /**
-     * Backup database and files
+     * Backup database and files (optimized for large files)
      */
     protected function backupFull($filename)
     {
         $this->info('Creating full backup...');
 
+        // Increase memory and time limits for large backups
+        ini_set('memory_limit', '1G');
+        set_time_limit(0);
+
         // First create database backup
+        $this->info('Step 1/5: Creating database backup...');
         $dbPath = $this->backupDatabase($filename . '-db');
+        $this->info('Database backup completed');
 
         // Create ZIP with database and files
         $backupPath = storage_path("app/backups/{$filename}.zip");
@@ -240,13 +246,20 @@ class WorkingBackup extends Command
         }
 
         // Add database backup
+        $this->info('Step 2/5: Adding database to archive...');
         $zip->addFile($dbPath, 'database.sql');
 
-        // Add important directories
+        // Add important directories with progress
+        $this->info('Step 3/5: Adding application files...');
         $this->addDirectoryToZip($zip, app_path(), 'app');
+
+        $this->info('Step 4/5: Adding configuration and resources...');
         $this->addDirectoryToZip($zip, config_path(), 'config');
         $this->addDirectoryToZip($zip, resource_path(), 'resources');
-        $this->addDirectoryToZip($zip, public_path(), 'public');
+
+        // Skip large public directories that aren't essential
+        $this->info('Step 5/5: Adding essential public files...');
+        $this->addEssentialPublicFiles($zip);
 
         $zip->close();
 
@@ -256,7 +269,47 @@ class WorkingBackup extends Command
         $size = filesize($backupPath);
         $this->info("Full backup created: " . $this->formatBytes($size));
 
+        // Reset limits
+        ini_set('memory_limit', '256M');
+
         return $backupPath;
+    }
+
+    /**
+     * Add essential public files only (skip large uploads/images)
+     */
+    protected function addEssentialPublicFiles($zip)
+    {
+        $publicPath = public_path();
+        $essentialFiles = [
+            'index.php',
+            'robots.txt',
+            'favicon.ico',
+            '.htaccess'
+        ];
+
+        $essentialDirs = [
+            'css',
+            'js',
+            'font',
+            'icon'
+        ];
+
+        // Add essential files
+        foreach ($essentialFiles as $file) {
+            $filePath = $publicPath . '/' . $file;
+            if (file_exists($filePath)) {
+                $zip->addFile($filePath, 'public/' . $file);
+            }
+        }
+
+        // Add essential directories
+        foreach ($essentialDirs as $dir) {
+            $dirPath = $publicPath . '/' . $dir;
+            if (is_dir($dirPath)) {
+                $this->addDirectoryToZip($zip, $dirPath, 'public/' . $dir);
+            }
+        }
     }
 
     /**
@@ -279,7 +332,7 @@ class WorkingBackup extends Command
     }
 
     /**
-     * Encrypt backup file
+     * Encrypt backup file (optimized for large files)
      */
     protected function encryptBackup($backupPath)
     {
@@ -290,7 +343,15 @@ class WorkingBackup extends Command
         $algorithm = $config['algorithm'];
 
         $encryptedPath = $backupPath . '.enc';
+        $fileSize = filesize($backupPath);
 
+        // For large files (>100MB), use streaming encryption
+        if ($fileSize > 100 * 1024 * 1024) {
+            $this->info('Large file detected (' . $this->formatBytes($fileSize) . '), using streaming encryption...');
+            return $this->streamEncryptFile($backupPath, $encryptedPath, $password, $algorithm);
+        }
+
+        // Standard encryption for smaller files
         $data = file_get_contents($backupPath);
         $encrypted = openssl_encrypt($data, $algorithm, $password, 0, str_repeat('0', 16));
 
@@ -299,6 +360,37 @@ class WorkingBackup extends Command
 
         $this->info('Backup encrypted with ' . $algorithm);
         return $encryptedPath;
+    }
+
+    /**
+     * Stream encrypt large files to avoid memory issues
+     */
+    protected function streamEncryptFile($inputPath, $outputPath, $password, $algorithm)
+    {
+        $chunkSize = 8192; // 8KB chunks
+        $iv = str_repeat('0', 16);
+
+        $inputHandle = fopen($inputPath, 'rb');
+        $outputHandle = fopen($outputPath, 'wb');
+
+        if (!$inputHandle || !$outputHandle) {
+            throw new \Exception('Failed to open files for encryption');
+        }
+
+        while (!feof($inputHandle)) {
+            $chunk = fread($inputHandle, $chunkSize);
+            if ($chunk !== false && strlen($chunk) > 0) {
+                $encryptedChunk = openssl_encrypt($chunk, $algorithm, $password, OPENSSL_RAW_DATA, $iv);
+                fwrite($outputHandle, $encryptedChunk);
+            }
+        }
+
+        fclose($inputHandle);
+        fclose($outputHandle);
+        unlink($inputPath);
+
+        $this->info('Large file encrypted successfully with streaming');
+        return $outputPath;
     }
 
     /**

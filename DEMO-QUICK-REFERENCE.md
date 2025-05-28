@@ -17,18 +17,18 @@ php artisan app:working-backup --type=db --encrypt --filename="pbl-demo"
 ```
 **Say:** "AES-256 encryption for production security"
 
-### **4. CLOUD BACKUP (2 min)**
+### **4. S3 CLOUD BACKUP (2 min)**
 ```bash
 php artisan app:working-backup --type=db --encrypt --s3 --notify
 ```
 **Say:** "Complete production workflow with AWS S3 storage"
 
-### **5. RESTORE DEMO (2 min)**
+### **5. S3 RESTORE DEMO (2 min)**
 ```bash
 php artisan app:working-restore --s3
 php artisan app:working-restore --latest --from-s3 --decrypt
 ```
-**Say:** "Automated disaster recovery from cloud storage"
+**Say:** "Automated disaster recovery from cloud storage with decryption"
 
 ### **6. AUTOMATION (1 min)**
 ```bash
@@ -48,27 +48,51 @@ php artisan schedule:list
 
 ---
 
-## 🚀 BACKUP COMMANDS
+## 🚀 S3 BACKUP COMMANDS
 
 | Command | Purpose |
 |---------|---------|
-| `--type=db` | Database only |
-| `--type=full` | Complete system |
-| `--encrypt` | AES-256 encryption |
-| `--s3` | Upload to AWS S3 |
-| `--notify` | Email notifications |
+| `--type=db --s3` | Database backup to S3 |
+| `--type=full --s3` | Complete system to S3 |
+| `--encrypt --s3` | Encrypted S3 backup |
+| `--s3 --notify` | S3 backup with email |
+| `--filename="name" --s3` | Custom S3 filename |
+
+**Examples:**
+```bash
+# Basic S3 backup
+php artisan app:working-backup --type=db --s3
+
+# Production S3 backup
+php artisan app:working-backup --type=db --encrypt --s3 --notify
+
+# Full system S3 backup
+php artisan app:working-backup --type=full --encrypt --s3
+```
 
 ---
 
-## 🔄 RESTORE COMMANDS
+## 🔄 S3 RESTORE COMMANDS
 
 | Command | Purpose |
 |---------|---------|
-| `--list` | Show local backups |
-| `--s3` | Show S3 backups |
-| `--latest` | Restore newest backup |
-| `--from-s3` | Download from S3 |
-| `--decrypt` | Decrypt backup |
+| `--s3` | List S3 backups |
+| `--from-s3` | Restore from S3 |
+| `--latest --from-s3` | Latest S3 backup |
+| `--from-s3 --decrypt` | Decrypt S3 backup |
+| `"name" --from-s3` | Specific S3 backup |
+
+**Examples:**
+```bash
+# List S3 backups
+php artisan app:working-restore --s3
+
+# Restore latest from S3
+php artisan app:working-restore --latest --from-s3 --decrypt
+
+# Interactive S3 restore
+php artisan app:working-restore --from-s3
+```
 
 ---
 
