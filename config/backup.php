@@ -138,7 +138,9 @@ return [
          * The encryption algorithm to use.
          * Supported: 'AES-128', 'AES-192', 'AES-256'
          */
-        'encryption' => 'AES-256',
+        'encryption' => env('BACKUP_ARCHIVE_PASSWORD') ? 'AES-256' : null,
+
+
 
         /*
          * The directory where the temporary files will be stored.
