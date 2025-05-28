@@ -132,16 +132,15 @@ return [
         /*
          * The password to be used for archive encryption.
          * Set to `null` to disable encryption.
-         * Temporarily disabled due to ZIP compression issues.
+         * Using empty string to satisfy type requirements.
          */
         'password' => null,
 
         /*
          * The encryption algorithm to be used for archive encryption.
-         * You can set it to `null` or `false` to disable encryption.
-         * Temporarily disabled due to ZIP compression issues.
+         * Must be string type - using 'none' to disable.
          */
-        'encryption' => null,
+        'encryption' => 'none',
 
         /*
          * The directory where the temporary files will be stored.
