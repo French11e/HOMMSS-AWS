@@ -32,6 +32,13 @@ return [
                     base_path('storage/framework/cache'),
                     base_path('storage/framework/sessions'),
                     base_path('storage/framework/views'),
+                    base_path('storage/app/backups'),
+                    base_path('storage/app/private'),
+                    base_path('.git'),
+                    base_path('.env'),
+                    base_path('bootstrap/cache'),
+                    base_path('public/storage'),
+                    base_path('storage/debugbar'),
                 ],
 
                 /*
@@ -97,6 +104,7 @@ return [
          * https://github.com/spatie/db-dumper#using-compression
          *
          * If you do not want any compressor at all, set it to null.
+         * Setting to null to avoid ZIP compression issues.
          */
         'database_dump_compressor' => null,
 
@@ -119,6 +127,18 @@ return [
                 'local',
             ],
         ],
+
+        /*
+         * The password to be used for archive encryption.
+         * Set to `null` to disable encryption.
+         */
+        'password' => env('BACKUP_ARCHIVE_PASSWORD'),
+
+        /*
+         * The encryption algorithm to use.
+         * Supported: 'AES-128', 'AES-192', 'AES-256'
+         */
+        'encryption' => 'AES-256',
 
         /*
          * The directory where the temporary files will be stored.

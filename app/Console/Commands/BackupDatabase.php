@@ -35,6 +35,9 @@ class BackupDatabase extends Command
             $onlyDb = $this->option('only-db');
             $customFilename = $this->option('filename');
 
+            // Increase memory limit for backup process
+            ini_set('memory_limit', '512M');
+
             // Build the command arguments
             $arguments = [];
 
@@ -53,8 +56,15 @@ class BackupDatabase extends Command
                 $arguments['--filename'] = $prefix . Carbon::now()->format('Y-m-d-H-i-s');
             }
 
-            // Call the Spatie backup command
-            $this->call('backup:run', $arguments);
+            // Set timeout for backup process
+            $arguments['--timeout'] = 300; // 5 minutes
+
+            // Call the Spatie backup command with error handling
+            $exitCode = $this->call('backup:run', $arguments);
+
+            if ($exitCode !== 0) {
+                throw new \Exception('Backup command failed with exit code: ' . $exitCode);
+            }
 
             $this->info('Backup completed successfully!');
 
@@ -64,6 +74,7 @@ class BackupDatabase extends Command
             return Command::SUCCESS;
         } catch (\Exception $e) {
             $this->error('Backup failed: ' . $e->getMessage());
+            $this->error('Try running with --only-db flag for database-only backup');
             return Command::FAILURE;
         }
     }
@@ -76,8 +87,15 @@ class BackupDatabase extends Command
         $this->info('');
         $this->info('Backup Information:');
         $this->info('------------------');
-        $this->info('Backups are stored in: ' . storage_path('app/private/backups'));
-        $this->info('Backups are encrypted with password from BACKUP_ARCHIVE_PASSWORD env variable');
+        $this->info('Backups are stored in: ' . storage_path('app/backups'));
+
+        $encryptionPassword = config('backup.backup.password');
+        if ($encryptionPassword) {
+            $this->info('Backups are encrypted with AES-256 encryption');
+            $this->info('Encryption password is set from BACKUP_ARCHIVE_PASSWORD env variable');
+        } else {
+            $this->warn('Backups are NOT encrypted - set BACKUP_ARCHIVE_PASSWORD in .env to enable encryption');
+        }
         $this->info('');
 
         // List recent backups
