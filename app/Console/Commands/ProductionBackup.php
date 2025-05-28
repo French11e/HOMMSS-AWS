@@ -48,7 +48,7 @@ class ProductionBackup extends Command
             $arguments = $this->buildBackupArguments($backupType, $customFilename);
 
             $this->info("Starting {$backupType} backup...");
-            $this->info('Encryption: AES-256 (enabled)');
+            $this->info('Encryption: Temporarily disabled (ZIP compression fix)');
             $this->info('Storage: Local + AWS S3');
 
             // Execute backup
@@ -91,10 +91,10 @@ class ProductionBackup extends Command
     {
         $this->info('Performing pre-backup checks...');
 
-        // Check encryption configuration
+        // Check encryption configuration (temporarily disabled)
         $encryptionPassword = env('BACKUP_ARCHIVE_PASSWORD');
         if (!$encryptionPassword) {
-            throw new \Exception('BACKUP_ARCHIVE_PASSWORD not configured in .env');
+            $this->warn('BACKUP_ARCHIVE_PASSWORD not configured - encryption disabled');
         }
 
         // Check S3 configuration

@@ -1,7 +1,5 @@
 <?php
 
-use ZipArchive;
-
 return [
 
     'backup' => [
@@ -118,16 +116,6 @@ return [
         'destination' => [
 
             /*
-             * The compression algorithm to be used for creating the zip archive.
-             */
-            'compression_method' => ZipArchive::CM_STORE,
-
-            /*
-             * The compression level corresponding to the used algorithm.
-             */
-            'compression_level' => 0,
-
-            /*
              * The filename prefix used for the backup zip file.
              */
             'filename_prefix' => '',
@@ -144,17 +132,16 @@ return [
         /*
          * The password to be used for archive encryption.
          * Set to `null` to disable encryption.
+         * Temporarily disabled due to ZIP compression issues.
          */
-        'password' => env('BACKUP_ARCHIVE_PASSWORD'),
+        'password' => null,
 
         /*
          * The encryption algorithm to be used for archive encryption.
          * You can set it to `null` or `false` to disable encryption.
-         *
-         * When set to 'default', we'll use ZipArchive::EM_AES_256 if it is
-         * available on your system.
+         * Temporarily disabled due to ZIP compression issues.
          */
-        'encryption' => env('BACKUP_ARCHIVE_PASSWORD') ? 'default' : null,
+        'encryption' => null,
 
         /*
          * The directory where the temporary files will be stored.
