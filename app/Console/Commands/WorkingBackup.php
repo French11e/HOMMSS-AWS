@@ -17,7 +17,7 @@ class WorkingBackup extends Command
      *
      * @var string
      */
-    protected $signature = 'app:working-backup 
+    protected $signature = 'app:working-backup
                             {--type=db : Type of backup (db, files, full)}
                             {--filename= : Custom filename for the backup}
                             {--encrypt : Enable encryption}
@@ -52,10 +52,10 @@ class WorkingBackup extends Command
 
             // Generate filename
             $backupFilename = $this->generateFilename($type, $filename);
-            
+
             $this->info("Starting {$type} backup...");
             $this->info("Filename: {$backupFilename}");
-            
+
             if ($encrypt) {
                 $this->info('Encryption: AES-256 enabled');
             } else {
@@ -108,7 +108,7 @@ class WorkingBackup extends Command
         // Check disk space
         $freeSpace = disk_free_space(storage_path());
         $freeSpaceMB = round($freeSpace / 1024 / 1024);
-        
+
         if ($freeSpaceMB < 100) {
             throw new \Exception("Insufficient disk space: {$freeSpaceMB}MB available");
         }
@@ -180,9 +180,9 @@ class WorkingBackup extends Command
 
         // Use mysqldump
         $command = "mysqldump -h{$host} -u{$username} -p{$password} {$database} > {$backupPath}";
-        
+
         $result = Process::run($command);
-        
+
         if (!$result->successful()) {
             throw new \Exception('Database backup failed: ' . $result->errorOutput());
         }
@@ -285,16 +285,19 @@ class WorkingBackup extends Command
     {
         $this->info('Encrypting backup...');
 
-        $password = env('BACKUP_ARCHIVE_PASSWORD', 'default-password');
+        $config = config('hommss-backup.encryption');
+        $password = $config['password'];
+        $algorithm = $config['algorithm'];
+
         $encryptedPath = $backupPath . '.enc';
 
         $data = file_get_contents($backupPath);
-        $encrypted = openssl_encrypt($data, 'AES-256-CBC', $password, 0, str_repeat('0', 16));
+        $encrypted = openssl_encrypt($data, $algorithm, $password, 0, str_repeat('0', 16));
 
         file_put_contents($encryptedPath, $encrypted);
         unlink($backupPath);
 
-        $this->info('Backup encrypted with AES-256');
+        $this->info('Backup encrypted with ' . $algorithm);
         return $encryptedPath;
     }
 
@@ -308,9 +311,9 @@ class WorkingBackup extends Command
         try {
             $filename = basename($backupPath);
             $contents = file_get_contents($backupPath);
-            
+
             Storage::disk('s3')->put($filename, $contents);
-            
+
             $this->info("Uploaded to S3: {$filename}");
         } catch (\Exception $e) {
             $this->warn("S3 upload failed: " . $e->getMessage());
@@ -324,7 +327,7 @@ class WorkingBackup extends Command
     {
         $status = $success ? 'SUCCESS' : 'FAILED';
         $message = "Backup {$status}: {$type} backup completed in {$duration} seconds";
-        
+
         Log::info($message);
         $this->info("Notification logged: {$message}");
     }
@@ -348,7 +351,7 @@ class WorkingBackup extends Command
     protected function handleFailure(\Exception $e, $startTime)
     {
         $duration = $startTime->diffInSeconds(now());
-        
+
         $this->error('Backup failed!');
         $this->error("Error: " . $e->getMessage());
         $this->error("Duration: {$duration} seconds");
