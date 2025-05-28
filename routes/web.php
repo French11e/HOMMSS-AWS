@@ -179,6 +179,15 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 
+// Security Testing Routes (Only available when SECURITY_TESTING_MODE=true)
+Route::middleware(['web'])->prefix('security')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\SecurityTestController::class, 'index'])->name('security.dashboard');
+    Route::post('/xss-test', [App\Http\Controllers\SecurityTestController::class, 'xssTest'])->name('security.xss');
+    Route::post('/clickjacking-test', [App\Http\Controllers\SecurityTestController::class, 'clickjackingTest'])->name('security.clickjacking');
+    Route::post('/sql-injection-test', [App\Http\Controllers\SecurityTestController::class, 'sqlInjectionTest'])->name('security.sql');
+    Route::get('/report', [App\Http\Controllers\SecurityTestController::class, 'securityReport'])->name('security.report');
+});
+
 
 
 
