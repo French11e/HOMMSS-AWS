@@ -29,49 +29,55 @@ class BackupDatabase extends Command
      */
     public function handle()
     {
-        $this->info('Starting backup process...');
+        $this->info('HOMMSS Backup System');
+        $this->info('===================');
 
         try {
             $onlyDb = $this->option('only-db');
             $customFilename = $this->option('filename');
 
-            // Increase memory limit for backup process
-            ini_set('memory_limit', '512M');
-
             // Build the command arguments
             $arguments = [];
 
             if ($onlyDb) {
-                $this->info('Backing up only the database...');
+                $this->info('Creating database-only backup...');
                 $arguments['--only-db'] = true;
             } else {
-                $this->info('Backing up database and files...');
+                $this->info('Creating full backup (database + files)...');
             }
 
             // Set custom filename if provided
             if ($customFilename) {
                 $arguments['--filename'] = $customFilename;
+                $this->info("Using custom filename: {$customFilename}");
             } else {
-                $prefix = $onlyDb ? 'db-' : 'full-';
-                $arguments['--filename'] = $prefix . Carbon::now()->format('Y-m-d-H-i-s');
+                $prefix = $onlyDb ? 'hommss-db-' : 'hommss-full-';
+                $filename = $prefix . Carbon::now()->format('Y-m-d-H-i-s');
+                $arguments['--filename'] = $filename;
+                $this->info("Generated filename: {$filename}");
             }
 
-            // Call the Spatie backup command with error handling
+            $this->info('Starting backup process...');
+
+            // Call the working Spatie backup command
             $exitCode = $this->call('backup:run', $arguments);
 
             if ($exitCode !== 0) {
-                throw new \Exception('Backup command failed with exit code: ' . $exitCode);
+                throw new \Exception('Backup process failed');
             }
 
-            $this->info('Backup completed successfully!');
+            $this->info('');
+            $this->info('✅ Backup completed successfully!');
 
             // Show backup information
             $this->displayBackupInfo();
 
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $this->error('Backup failed: ' . $e->getMessage());
-            $this->error('Try running with --only-db flag for database-only backup');
+            $this->error('❌ Backup failed: ' . $e->getMessage());
+            $this->info('');
+            $this->info('💡 Try using the direct Spatie command:');
+            $this->info('   php artisan backup:run --only-db');
             return Command::FAILURE;
         }
     }
