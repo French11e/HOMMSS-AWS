@@ -56,9 +56,6 @@ class BackupDatabase extends Command
                 $arguments['--filename'] = $prefix . Carbon::now()->format('Y-m-d-H-i-s');
             }
 
-            // Set timeout for backup process
-            $arguments['--timeout'] = 300; // 5 minutes
-
             // Call the Spatie backup command with error handling
             $exitCode = $this->call('backup:run', $arguments);
 
