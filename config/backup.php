@@ -1,5 +1,7 @@
 <?php
 
+use ZipArchive;
+
 return [
 
     'backup' => [
@@ -114,6 +116,16 @@ return [
         'database_dump_file_timestamp_format' => null,
 
         'destination' => [
+
+            /*
+             * The compression algorithm to be used for creating the zip archive.
+             */
+            'compression_method' => ZipArchive::CM_STORE,
+
+            /*
+             * The compression level corresponding to the used algorithm.
+             */
+            'compression_level' => 0,
 
             /*
              * The filename prefix used for the backup zip file.
