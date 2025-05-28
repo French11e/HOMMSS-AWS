@@ -131,14 +131,16 @@ return [
         /*
          * The password to be used for archive encryption.
          * Set to `null` to disable encryption.
+         * Temporarily disabled to fix TypeError.
          */
-        'password' => env('BACKUP_ARCHIVE_PASSWORD'),
+        'password' => null,
 
         /*
          * The encryption algorithm to use.
-         * Supported: 'AES-128', 'AES-192', 'AES-256'
+         * Use ZipArchive constants for encryption.
+         * Set to `null` to disable encryption.
          */
-        'encryption' => env('BACKUP_ARCHIVE_PASSWORD') ? 'AES-256' : null,
+        'encryption' => null,
 
 
 
