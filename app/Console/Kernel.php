@@ -13,25 +13,25 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // Daily database backup at 2:00 AM with encryption and S3
-        $schedule->command('app:production-backup --type=db --notify')
+        $schedule->command('app:working-backup --type=db --encrypt --s3 --notify')
             ->dailyAt('02:00')
             ->appendOutputTo(storage_path('logs/backup.log'))
             ->emailOutputOnFailure(env('ADMIN_EMAIL'));
 
         // Weekly full backup on Sundays at 3:00 AM
-        $schedule->command('app:production-backup --type=full --notify')
+        $schedule->command('app:working-backup --type=full --encrypt --s3 --notify')
             ->weeklyOn(0, '03:00')
             ->appendOutputTo(storage_path('logs/backup.log'))
             ->emailOutputOnFailure(env('ADMIN_EMAIL'));
 
-        // Daily backup health monitoring at 8:00 AM
-        $schedule->command('backup:monitor')
+        // Daily backup verification at 8:00 AM
+        $schedule->command('app:working-restore --list')
             ->dailyAt('08:00')
-            ->emailOutputOnFailure(env('ADMIN_EMAIL'));
+            ->appendOutputTo(storage_path('logs/backup.log'));
 
-        // Weekly backup cleanup on Mondays at 4:00 AM
-        $schedule->command('backup:clean')
-            ->weeklyOn(1, '04:00')
+        // Weekly S3 backup verification on Tuesdays at 9:00 AM
+        $schedule->command('app:working-restore --s3')
+            ->weeklyOn(2, '09:00')
             ->appendOutputTo(storage_path('logs/backup.log'));
     }
 
