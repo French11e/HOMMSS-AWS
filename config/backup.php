@@ -128,20 +128,6 @@ return [
             ],
         ],
 
-        /*
-         * The password to be used for archive encryption.
-         * Set to `null` to disable encryption.
-         * Temporarily disabled to fix TypeError.
-         */
-        'password' => null,
-
-        /*
-         * The encryption algorithm to use.
-         * Use ZipArchive constants for encryption.
-         * Set to empty string to disable encryption.
-         */
-        'encryption' => '',
-
 
 
         /*
