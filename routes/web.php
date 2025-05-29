@@ -180,12 +180,17 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 
 // Security Testing Routes (Only available when SECURITY_TESTING_MODE=true)
-Route::middleware(['web'])->prefix('security')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\SecurityTestController::class, 'index'])->name('security.dashboard');
-    Route::post('/xss-test', [App\Http\Controllers\SecurityTestController::class, 'xssTest'])->name('security.xss');
-    Route::post('/clickjacking-test', [App\Http\Controllers\SecurityTestController::class, 'clickjackingTest'])->name('security.clickjacking');
-    Route::post('/sql-injection-test', [App\Http\Controllers\SecurityTestController::class, 'sqlInjectionTest'])->name('security.sql');
-    Route::get('/report', [App\Http\Controllers\SecurityTestController::class, 'securityReport'])->name('security.report');
+Route::prefix('security')->group(function () {
+    // Simple test route
+    Route::get('/test', function () {
+        return 'Security routes are working!';
+    });
+
+    // Simple security dashboard
+    Route::get('/dashboard', [App\Http\Controllers\SimpleSecurityController::class, 'index'])->name('security.dashboard');
+    Route::post('/xss-test', [App\Http\Controllers\SimpleSecurityController::class, 'xssTest'])->name('security.xss');
+    Route::post('/sql-test', [App\Http\Controllers\SimpleSecurityController::class, 'sqlTest'])->name('security.sql');
+    Route::get('/status', [App\Http\Controllers\SimpleSecurityController::class, 'status'])->name('security.status');
 });
 
 
