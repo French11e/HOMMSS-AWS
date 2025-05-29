@@ -179,18 +179,17 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 
-// Security Testing Routes (Only available when SECURITY_TESTING_MODE=true)
-Route::prefix('security')->group(function () {
-    // Simple test route
-    Route::get('/test', function () {
-        return 'Security routes are working!';
-    });
+// Security Testing Routes (Minimal version)
+Route::get('/security/test', function () {
+    return 'Security routes are working!';
+});
 
-    // Simple security dashboard
-    Route::get('/dashboard', [App\Http\Controllers\SimpleSecurityController::class, 'index'])->name('security.dashboard');
-    Route::post('/xss-test', [App\Http\Controllers\SimpleSecurityController::class, 'xssTest'])->name('security.xss');
-    Route::post('/sql-test', [App\Http\Controllers\SimpleSecurityController::class, 'sqlTest'])->name('security.sql');
-    Route::get('/status', [App\Http\Controllers\SimpleSecurityController::class, 'status'])->name('security.status');
+Route::get('/security/dashboard', function () {
+    if (!env('SECURITY_TESTING_MODE', false)) {
+        return '<h1>Security Testing Disabled</h1><p>Run: <code>php artisan security:test enable</code></p>';
+    }
+
+    return view('security.minimal-dashboard');
 });
 
 
